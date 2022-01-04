@@ -1,0 +1,32 @@
+.idea
+/data/mongo
+/logs/is
+
+*.DS_Store
+*.pyc
+
+# web-page
+/web-page/.idea
+/web-page/.gitignore
+
+# dependencies
+/web-page/node_modules
+/web-page/.pnp
+/web-page.pnp.js
+
+# testing
+/web-page/coverage
+
+# production
+/web-page/build
+
+# misc
+/web-page/.DS_Store
+/web-page/.env.local
+/web-page/.env.development.local
+/web-page/.env.test.local
+/web-page/.env.production.local
+
+/web-page/npm-debug.log*
+/web-page/yarn-debug.log*
+/web-page/yarn-error.log*

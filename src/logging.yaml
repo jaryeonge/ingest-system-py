@@ -1,0 +1,38 @@
+version: 1
+disable_existing_loggers: False
+
+formatters:
+  standard:
+    format: '%(asctime)s: %(levelname)s >> %(message)s'
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    formatter: standard
+    stream: ext://sys.stdout
+
+  file_info:
+    class: logging.handlers.RotatingFileHandler
+    level: INFO
+    formatter: standard
+    filename: '/logs/is/app.log'
+    maxBytes: 10485760
+    backupCount: 20
+
+  file_error:
+    class: logging.handlers.RotatingFileHandler
+    level: ERROR
+    formatter: standard
+    filename: '/logs/is/app_error.log'
+    maxBytes: 10485760
+    backupCount: 10
+
+loggers:
+  uvicorn:
+    error:
+      propagate: True
+
+root:
+  level: DEBUG
+  handlers: [console, file_info, file_error]
+  propagate: no

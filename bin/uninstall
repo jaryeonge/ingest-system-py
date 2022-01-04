@@ -1,0 +1,31 @@
+#!/bin/bash
+# relative directory
+RELATIVE_DIR=$(dirname "$BASH_SOURCE")
+ROOT_DIR=$(readlink -f "$RELATIVE_DIR")
+ROOT_DIR=${ROOT_DIR/'/bin'/}
+
+# load version
+if [ -f "$ROOT_DIR/.env" ]; then
+  export $(grep -v '^#' "$ROOT_DIR/.env" | xargs -d '\n')
+  VERSION="$VERSION"
+fi
+echo "VERSION: $VERSION"
+
+# stop ingest-system-py
+if ingest-system-py stop > /dev/null 2>&1; then
+  echo "ingest-system stop"
+fi
+
+# remove docker container and image
+if docker rm is-mongodb-py > /dev/null 2>&1; docker rm is-app-py > /dev/null 2>&1; docker rm is-web-py > /dev/null 2>&1; then
+  echo "ingest-system container is removed"
+fi
+
+if docker image rm mongo:5.0 > /dev/null 2>&1; docker image rm "is-app-py:$VERSION" > /dev/null 2>&1; docker image rm "is-web-py:$VERSION" > /dev/null 2>&1; then
+  echo "ingest-system image is removed"
+fi
+
+# remove symbolic link
+rm -f "/usr/bin/ingest-system"
+
+echo "ingest-system has been successfully uninstalled"

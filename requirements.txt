@@ -1,0 +1,10 @@
+apscheduler==3.8.1
+elasticsearch==7.16.1
+geoip2==4.2.0
+fastapi==0.70.1
+pyjwt==1.7.1
+pymongo==4.0.1
+pymssql==2.2.2
+PyMySQL==1.0.2
+pyyaml==6.0
+uvicorn==0.16.0

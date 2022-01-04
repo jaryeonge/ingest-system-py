@@ -1,0 +1,64 @@
+#!/bin/bash
+# relative directory
+ROOT_DIR=$(dirname $(realpath "$0"))
+ROOT_DIR=${ROOT_DIR/'/bin'/}
+
+# set working directory
+cd "$ROOT_DIR"
+
+# load version
+if [ -f "$ROOT_DIR/.env" ]; then
+  export $(grep -v '^#' "$ROOT_DIR/.env" | xargs -d '\n')
+  VERSION="$VERSION"
+fi
+
+# comment: Command
+Command(){
+  echo "$SERVICE <command> [arguments]"
+  echo "command:"
+  echo "start   start program"
+  echo "start --no-web   start with no web"
+  echo "stop   stop program"
+  echo "restart   restart program"
+  echo "restart --no-web   restart with no web"
+}
+
+# set docker-compose timeout setting
+export DOCKER_CLIENT_TIMEOUT=2400
+export COMPOSE_HTTP_TIMEOUT=2400
+
+# main
+if [ $# -eq 0 ]; then
+  Command
+else
+  case $1 in
+  start)
+    if [ "$2" ]; then
+      echo "Error: $2 is not supported"
+    else
+      docker-compose up -d
+    fi
+    ;;
+  stop)
+    if [ "$2" ]; then
+      echo "Error: $2 is not supported"
+    else
+      docker-compose down
+    fi
+    ;;
+  restart)
+    if [ "$2" ]; then
+      echo "Error: $2 is not supported"
+    else
+      docker-compose down && docker-compose up -d
+    fi
+    ;;
+  -v|--version)
+    echo "VERSION: $VERSION"
+    ;;
+  *)
+    echo "Error: $1 is not supported"
+    Command
+    ;;
+  esac
+fi

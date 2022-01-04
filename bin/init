@@ -1,0 +1,30 @@
+#!/bin/bash
+# check docker & docker-compose
+if ! docker --version; then
+  echo "Please install docker" && exit
+fi
+
+if ! docker-compose --version; then
+  echo "Please install docker-compose" && exit
+fi
+
+# relative directory
+RELATIVE_DIR=$(dirname "$BASH_SOURCE")
+ROOT_DIR=$(readlink -f "$RELATIVE_DIR")
+ROOT_DIR=${ROOT_DIR/'/bin'/}
+
+# set working directory
+cd "$ROOT_DIR"
+
+# make directory
+mkdir "$ROOT_DIR/data/mongo"
+mkdir "$ROOT_DIR/logs/is"
+
+# authorization
+chmod -R 777 "$ROOT_DIR"
+
+# build
+bash "$ROOT_DIR/bin/build"
+
+# generate link
+ln -s "$ROOT_DIR/bin/ingest-system-py" "/usr/bin/ingest-system-py"

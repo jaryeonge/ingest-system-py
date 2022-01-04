@@ -1,0 +1,53 @@
+version: "3.8"
+
+services:
+  is-mongodb-py:
+    image: mongo:5.0
+    container_name: is-mongodb-py
+    volumes:
+      - ./data/mongo:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: $ADMIN_USER
+      MONGO_INITDB_ROOT_PASSWORD: $ADMIN_PASSWORD
+      TZ: Asia/Seoul
+    ports:
+      - "27017:27017"
+    networks:
+      - is-py
+
+  is-app-py:
+    container_name: is-app-py
+    image: is-app-py:$VERSION
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./logs:/logs
+    environment:
+      TZ: Asia/Seoul
+    ports:
+      - "9090:9090"
+    networks:
+      - is-py
+    links:
+      - is-mongodb-py
+
+  is-web-py:
+    container_name: is-web-py
+    image: is-web-py:$VERSION
+    build:
+      context: ./web-page
+      dockerfile: Dockerfile
+    volumes:
+      - /app/node_modules # not mapping
+      - ./web-page:/app
+    environment:
+      TZ: Asia/Seoul
+    ports:
+      - "9080:9080"
+    networks:
+      - is-py
+
+networks:
+  is-py:
+    driver: bridge

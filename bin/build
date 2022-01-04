@@ -1,0 +1,10 @@
+#!/bin/bash
+# remove cache
+echo 1 > /proc/sys/vm/drop_caches
+sync
+
+# build
+docker-compose build
+
+# remove <none> docker image
+docker rmi "$(docker images -q --filter "dangling=true")" > /dev/null 2>&1
